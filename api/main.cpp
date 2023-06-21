@@ -1,9 +1,12 @@
 #include <iostream>
 #include <csignal>
 #include <jetson-utils/logging.h>
+#include <algorithm>
 
 #include "Camera.h"
 #include "Image.h"
+#include "FaceDetect.h"
+#include "TRetina.h"
 
 bool SignalReceived = false;
 
@@ -22,13 +25,21 @@ int main() {
     Camera Camera;
     Camera.Setup();
 
+    FaceDetect FaceDetect;
+
+//    TRetina FaceRec(1280, 720);
+
+    LogVerbose("finished starting\n");
+
     while (!SignalReceived)
     {
         Image Image;
-        int result = Camera.Capture(Image);
-        LogVerbose("capture status: %i\n", result);
+        Camera.Capture(Image);
+
+        FaceDetect.Detect(Image);
+
+//        TRetina FaceRec(Image.GetWidth(), Image.GetHeight());
     }
 
-    std::cout << "this is a test" << std::endl;
     return 0;
 }

@@ -1,22 +1,24 @@
-//
-// Created by charles on 12/04/23.
-//
-
-#ifndef CHARLES_IMAGE_H
-#define CHARLES_IMAGE_H
+#pragma once
 
 #include <vector_types.h>
+#include <opencv2/core/mat.hpp>
 
-class Image {
-public:
-    Image();
-
-private:
-    uchar3* RawImage{};
-
-public:
-    inline uchar3* GetRawImage() { return RawImage; }
+struct Dimensions {
+    unsigned int Height;
+    unsigned int Width;
 };
 
+class Image
+{
+public:
+    Image();
+    cv::Mat RawImage{};
 
-#endif //CHARLES_IMAGE_H
+private:
+    Dimensions ImageDimensions{};
+
+public:
+    inline void SetDimensions(unsigned int Height, unsigned int Width) { ImageDimensions.Height = Height; ImageDimensions.Width = Width; }
+    [[nodiscard]] inline unsigned int GetHeight() const { return ImageDimensions.Height; }
+    [[nodiscard]] inline unsigned int GetWidth() const { return ImageDimensions.Width; }
+};
