@@ -13,46 +13,17 @@ int FaceDetect::Detect(Image& ImageToCheck)
 
     int result = Net.DetectFace(ImageToCheck, Faces);
 
+    LogVerbose("faces: %d\n", result);
+
     if (result > 0)
     {
-//        for (detectNet::Detection Detection : Detections)
-//        {
-//            if (Detection.Confidence > 0.8f)
-//            {
-//                Face Face(Detection);
-//                Faces.push_back(Face);
-//            }
-//        }
+        for (Face& Face : Faces) {
+            ImageToCheck.DrawFace(&Face);
+            ImageToCheck.DrawLandmarks(&Face);
+        }
+
+        ImageToCheck.SaveImage("/home/charles/test_image.jpg");
     }
-    LogVerbose("faces: %d\n", result);
 
     return result;
 }
-
-//int FaceDetect::Detect(Image& ImageToCheck)
-//{
-//    Faces.clear();
-//
-//    detectNet::Detection Detections[20];
-//
-//    const int result = Net->Detect(
-//            ImageToCheck.RawImage,
-//            ImageToCheck.GetWidth(),
-//            ImageToCheck.GetHeight(),
-//            Detections,
-//            OverlayFlags);
-//
-//    if (result > 0)
-//    {
-//        for (detectNet::Detection Detection : Detections)
-//        {
-//            if (Detection.Confidence > 0.8f)
-//            {
-//                Face Face(Detection);
-//                Faces.push_back(Face);
-//            }
-//        }
-//    }
-//
-//    return result;
-//}

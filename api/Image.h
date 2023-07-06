@@ -8,10 +8,16 @@ struct Dimensions {
     unsigned int Width;
 };
 
+class Face;
+
 class Image
 {
 public:
     Image();
+    void DrawFace(Face* Face);
+    void DrawLandmarks(Face* Face);
+    void SaveImage(const char* Filename);
+
     cv::Mat RawImage{};
 
 private:
