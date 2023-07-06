@@ -23,6 +23,9 @@ private:
     unsigned int ImgWidth;
     unsigned int ImgHeight;
 
+    float ScaleX{0.f};
+    float ScaleY{0.f};
+
     const int RetinaWidth{320};
     const int RetinaHeight{240};
 
@@ -36,5 +39,5 @@ private:
     static void QSortDescentInplace(std::vector<Face>& Faces);
     static void NMSSortedBboxes(const std::vector<Face>& Faces, std::vector<int>& Picked, float Threshold);
     static ncnn::Mat GenerateAnchors(int BaseSize, const ncnn::Mat& Ratios, const ncnn::Mat& Scales);
-    static void GenerateProposals(const ncnn::Mat& Anchors, int FeatStride, const ncnn::Mat& ScoreBlob, const ncnn::Mat& BboxBlob, const ncnn::Mat& LandmarkBlob, float ProdThreshold, std::vector<Face>& Faces);
+    void GenerateProposals(const ncnn::Mat& Anchors, int FeatStride, const ncnn::Mat& ScoreBlob, const ncnn::Mat& BboxBlob, const ncnn::Mat& LandmarkBlob, float ProdThreshold, std::vector<Face>& Faces);
 };

@@ -22,17 +22,16 @@ TRetina::~TRetina() = default;
 
 int TRetina::DetectFace(Image& Image, std::vector<Face>& Faces)
 {
-//    cv::Mat Frame;
-//
-//    float ScaleX = ((float) Frame.cols) / RetinaWidth;
-//    float ScaleY = ((float) Frame.rows) / RetinaHeight;
-//
-//     cv::resize(image.RawImage, Frame, cv::Size(RetinaWidth,RetinaHeight),cv::INTER_LINEAR);
-//
-//     return 0;
+    cv::Mat Frame;
+
+    ScaleX = Image.GetWidth() / RetinaWidth;
+    ScaleY = Image.GetHeight() / RetinaHeight;
+
+     cv::resize(Image.RawImage, Frame, cv::Size(RetinaWidth,RetinaHeight),cv::INTER_LINEAR);
 
 //    ncnn::Mat In = ncnn::Mat(ImgHeight, ImgWidth, ncnn::Mat::PIXEL_RGB,image.RawImage);
-    ncnn::Mat In = ncnn::Mat::from_pixels(Image.RawImage.data, ncnn::Mat::PIXEL_BGR2RGB, ImgWidth, ImgHeight);
+//    ncnn::Mat In = ncnn::Mat::from_pixels(Image.RawImage.data, ncnn::Mat::PIXEL_BGR2RGB, ImgWidth, ImgHeight);
+    ncnn::Mat In = ncnn::Mat::from_pixels(Frame.data, ncnn::Mat::PIXEL_BGR2RGB, RetinaWidth, RetinaHeight);
 
     ncnn::Extractor Extractor = RetinaFace.create_extractor(); //every time use a new extractor to clear internal caches
 
@@ -62,88 +61,83 @@ int TRetina::DetectFace(Image& Image, std::vector<Face>& Faces)
         FaceProposals.insert(FaceProposals.end(), Face32.begin(), Face32.end());
     }
 
-//    // stride 16
-//    {
-//        ncnn::Mat ScoreBlob, BboxBlob, LandmarkBlob;
-//        Extractor.extract("face_rpn_cls_prob_reshape_stride16", ScoreBlob);
-//        Extractor.extract("face_rpn_bbox_pred_stride16", BboxBlob);
-//        Extractor.extract("face_rpn_landmark_pred_stride16", LandmarkBlob);
-//
-//        const int BaseSize = 16;
-//        const int FeatStride = 16;
-//        ncnn::Mat Ratios(1);
-//        Ratios[0] = 1.f;
-//        ncnn::Mat Scales(2);
-//        Scales[0] = 8.f;
-//        Scales[1] = 4.f;
-//        ncnn::Mat Anchors = GenerateAnchors(BaseSize, Ratios, Scales);
-//
-//        std::vector<Face> Face16;
-//        GenerateProposals(Anchors, FeatStride, ScoreBlob, BboxBlob, LandmarkBlob, ProbThreshold, Face16);
-//
-//        FaceProposals.insert(FaceProposals.end(), Face16.begin(), Face16.end());
-//    }
-//
-//    // stride 8
-//    {
-//        ncnn::Mat ScoreBlob, BboxBlob, LandmarkBlob;
-//        Extractor.extract("face_rpn_cls_prob_reshape_stride8", ScoreBlob);
-//        Extractor.extract("face_rpn_bbox_pred_stride8", BboxBlob);
-//        Extractor.extract("face_rpn_landmark_pred_stride8", LandmarkBlob);
-//
-//        const int BaseSize = 16;
-//        const int FeatStride = 8;
-//        ncnn::Mat Ratios(1);
-//        Ratios[0] = 1.f;
-//        ncnn::Mat Scales(2);
-//        Scales[0] = 2.f;
-//        Scales[1] = 1.f;
-//        ncnn::Mat Anchors = GenerateAnchors(BaseSize, Ratios, Scales);
-//
-//        std::vector<Face> Face8;
-//        GenerateProposals(Anchors, FeatStride, ScoreBlob, BboxBlob, LandmarkBlob, ProbThreshold, Face8);
-//
-//        FaceProposals.insert(FaceProposals.end(), Face8.begin(), Face8.end());
-//    }
+    // stride 16
+    {
+        ncnn::Mat ScoreBlob, BboxBlob, LandmarkBlob;
+        Extractor.extract("face_rpn_cls_prob_reshape_stride16", ScoreBlob);
+        Extractor.extract("face_rpn_bbox_pred_stride16", BboxBlob);
+        Extractor.extract("face_rpn_landmark_pred_stride16", LandmarkBlob);
 
-    return FaceProposals.size();
+        const int BaseSize = 16;
+        const int FeatStride = 16;
+        ncnn::Mat Ratios(1);
+        Ratios[0] = 1.f;
+        ncnn::Mat Scales(2);
+        Scales[0] = 8.f;
+        Scales[1] = 4.f;
+        ncnn::Mat Anchors = GenerateAnchors(BaseSize, Ratios, Scales);
 
-//    // sort all proposals by score from highest to lowest
-//    QSortDescentInplace(FaceProposals);
-//
-//    // apply nms with NMSThreshold
-//    std::vector<int> Picked;
-//    NMSSortedBboxes(FaceProposals, Picked, NMSThreshold);
-//
-//    int FaceCount = Picked.size();
-//
-//    return FaceCount;
-//
-//    Faces.resize(FaceCount);
-//
-//    for (int i = 0; i < FaceCount; i++)
-//    {
-//        Faces[i] = FaceProposals[Picked[i]];
-//
-//        // clip to image size
-//        float x0 = Faces[i].BoundingBox.x;
-//        float y0 = Faces[i].BoundingBox.y;
-//        float x1 = x0 + Faces[i].BoundingBox.width;
-//        float y1 = y0 + Faces[i].BoundingBox.height;
-//
-//        x0 = std::max(std::min(x0, (float)ImgWidth - 1), 0.f);
-//        y0 = std::max(std::min(y0, (float)ImgHeight - 1), 0.f);
-//        x1 = std::max(std::min(x1, (float)ImgWidth - 1), 0.f);
-//        y1 = std::max(std::min(y1, (float)ImgHeight - 1), 0.f);
-//
-//        Faces[i].BoundingBox.x = x0;
-//        Faces[i].BoundingBox.y = y0;
-//        Faces[i].BoundingBox.width = x1 - x0;
-//        Faces[i].BoundingBox.height = y1 - y0;
-//    }
-//
-//    return Faces.size();
-    return 0;
+        std::vector<Face> Face16;
+        GenerateProposals(Anchors, FeatStride, ScoreBlob, BboxBlob, LandmarkBlob, ProbThreshold, Face16);
+
+        FaceProposals.insert(FaceProposals.end(), Face16.begin(), Face16.end());
+    }
+
+    // stride 8
+    {
+        ncnn::Mat ScoreBlob, BboxBlob, LandmarkBlob;
+        Extractor.extract("face_rpn_cls_prob_reshape_stride8", ScoreBlob);
+        Extractor.extract("face_rpn_bbox_pred_stride8", BboxBlob);
+        Extractor.extract("face_rpn_landmark_pred_stride8", LandmarkBlob);
+
+        const int BaseSize = 16;
+        const int FeatStride = 8;
+        ncnn::Mat Ratios(1);
+        Ratios[0] = 1.f;
+        ncnn::Mat Scales(2);
+        Scales[0] = 2.f;
+        Scales[1] = 1.f;
+        ncnn::Mat Anchors = GenerateAnchors(BaseSize, Ratios, Scales);
+
+        std::vector<Face> Face8;
+        GenerateProposals(Anchors, FeatStride, ScoreBlob, BboxBlob, LandmarkBlob, ProbThreshold, Face8);
+
+        FaceProposals.insert(FaceProposals.end(), Face8.begin(), Face8.end());
+    }
+
+    // sort all proposals by score from highest to lowest
+    QSortDescentInplace(FaceProposals);
+
+    // apply nms with NMSThreshold
+    std::vector<int> Picked;
+    NMSSortedBboxes(FaceProposals, Picked, NMSThreshold);
+
+    int FaceCount = Picked.size();
+
+    Faces.resize(FaceCount);
+
+    for (int i = 0; i < FaceCount; i++)
+    {
+        Faces[i] = FaceProposals[Picked[i]];
+
+        // clip to image size
+        float x0 = Faces[i].BoundingBox.x;
+        float y0 = Faces[i].BoundingBox.y;
+        float x1 = x0 + Faces[i].BoundingBox.width;
+        float y1 = y0 + Faces[i].BoundingBox.height;
+
+        x0 = std::max(std::min(x0, (float)ImgWidth - 1), 0.f);
+        y0 = std::max(std::min(y0, (float)ImgHeight - 1), 0.f);
+        x1 = std::max(std::min(x1, (float)ImgWidth - 1), 0.f);
+        y1 = std::max(std::min(y1, (float)ImgHeight - 1), 0.f);
+
+        Faces[i].BoundingBox.x = x0;
+        Faces[i].BoundingBox.y = y0;
+        Faces[i].BoundingBox.width = x1 - x0;
+        Faces[i].BoundingBox.height = y1 - y0;
+    }
+
+    return Faces.size();
 }
 
 static inline float IntersectionArea(const Face& a, const Face& b)
@@ -185,7 +179,7 @@ void TRetina::QSortDescentInplace(std::vector<Face>& Faces)
 {
     if (Faces.empty())
         return;
-
+    LogVerbose("Size: %zu %d", Faces.size(), (int) Faces.size());
     QSortDescentInplace(Faces, 0, Faces.size() - 1);
 }
 
@@ -228,7 +222,7 @@ void TRetina::NMSSortedBboxes(const std::vector<Face> &Faces, std::vector<int> &
 ncnn::Mat TRetina::GenerateAnchors(int BaseSize, const ncnn::Mat &Ratios, const ncnn::Mat &Scales)
 {
     int NumRatio = Ratios.w;
-    int NumScale = Ratios.w;
+    int NumScale = Scales.w;
 
     ncnn::Mat Anchors;
     Anchors.create(4, NumRatio * NumScale);
@@ -238,7 +232,7 @@ ncnn::Mat TRetina::GenerateAnchors(int BaseSize, const ncnn::Mat &Ratios, const 
 
     for (int i = 0; i < NumRatio; i++)
     {
-        float ar = Scales[i];
+        float ar = Ratios[i];
 
         int r_w = round(BaseSize / sqrt(ar));
         int r_h = round(r_w * ar); //round(base_size * sqrt(ar));
@@ -319,20 +313,20 @@ void TRetina::GenerateProposals(const ncnn::Mat &Anchors, int FeatStride, const 
                     float y1 = pb_cy + pb_h * 0.5f;
 
                     Face Obj;
-                    Obj.BoundingBox.x = x0;
-                    Obj.BoundingBox.y = y0;
-                    Obj.BoundingBox.width = (x1 - x0 + 1);
-                    Obj.BoundingBox.height = (y1 - y0 + 1);
-                    Obj.Landmarks[0].x = cx + (AnchorW + 1) * landmark.channel(0)[index];
-                    Obj.Landmarks[0].y = cy + (AnchorH + 1) * landmark.channel(1)[index];
-                    Obj.Landmarks[1].x = cx + (AnchorW + 1) * landmark.channel(2)[index];
-                    Obj.Landmarks[1].y = cy + (AnchorH + 1) * landmark.channel(3)[index];
-                    Obj.Landmarks[2].x = cx + (AnchorW + 1) * landmark.channel(4)[index];
-                    Obj.Landmarks[2].y = cy + (AnchorH + 1) * landmark.channel(5)[index];
-                    Obj.Landmarks[3].x = cx + (AnchorW + 1) * landmark.channel(6)[index];
-                    Obj.Landmarks[3].y = cy + (AnchorH + 1) * landmark.channel(7)[index];
-                    Obj.Landmarks[4].x = cx + (AnchorW + 1) * landmark.channel(8)[index];
-                    Obj.Landmarks[4].y = cy + (AnchorH + 1) * landmark.channel(9)[index];
+                    Obj.BoundingBox.x = x0 * ScaleX;
+                    Obj.BoundingBox.y = y0 * ScaleY;
+                    Obj.BoundingBox.width = (x1 - x0 + 1) * ScaleX;
+                    Obj.BoundingBox.height = (y1 - y0 + 1) * ScaleY;
+                    Obj.Landmarks[0].x = (cx + (AnchorW + 1) * landmark.channel(0)[index]) * ScaleX;
+                    Obj.Landmarks[0].y = (cy + (AnchorH + 1) * landmark.channel(1)[index]) * ScaleY;
+                    Obj.Landmarks[1].x = (cx + (AnchorW + 1) * landmark.channel(2)[index]) * ScaleX;
+                    Obj.Landmarks[1].y = (cy + (AnchorH + 1) * landmark.channel(3)[index]) * ScaleY;
+                    Obj.Landmarks[2].x = (cx + (AnchorW + 1) * landmark.channel(4)[index]) * ScaleX;
+                    Obj.Landmarks[2].y = (cy + (AnchorH + 1) * landmark.channel(5)[index]) * ScaleY;
+                    Obj.Landmarks[3].x = (cx + (AnchorW + 1) * landmark.channel(6)[index]) * ScaleX;
+                    Obj.Landmarks[3].y = (cy + (AnchorH + 1) * landmark.channel(7)[index]) * ScaleY;
+                    Obj.Landmarks[4].x = (cx + (AnchorW + 1) * landmark.channel(8)[index]) * ScaleX;
+                    Obj.Landmarks[4].y = (cy + (AnchorH + 1) * landmark.channel(9)[index]) * ScaleY;
                     Obj.FaceProb = prob;
 
                     Faces.push_back(Obj);
