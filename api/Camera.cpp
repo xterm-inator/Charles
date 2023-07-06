@@ -10,7 +10,7 @@
 Camera::Camera()
 {
 //    Source = videoSource::Create("csi://0");
-    Source = cv::VideoCapture("nvarguscamerasrc ! video/x-raw(memory:NVMM), width=3280, height=2464, format=(string)NV12, framerate=(fraction)20/1 ! nvvidconv ! video/x-raw, format=(string)BGRx ! videoconvert ! video/x-raw, format=(string)BGR ! appsink");
+    Source = cv::VideoCapture("nvarguscamerasrc ! video/x-raw(memory:NVMM), width=1280, height=720, format=(string)NV12, framerate=(fraction)60/1 ! nvvidconv ! video/x-raw, format=(string)BGRx ! videoconvert ! video/x-raw, format=(string)BGR ! appsink");
 }
 
 bool Camera::Setup()
@@ -37,7 +37,6 @@ int Camera::Capture(Image& NewImage)
 
     Source.read(NewImage.RawImage);
 
-//    cv::imwrite("/home/charles/test_image.jpg", NewImage.RawImage);
     NewImage.SetDimensions(HEIGHT, WIDTH);
 //    LogVerbose("width: %d, height: %d \n", Source->GetWidth(), Source->GetHeight());
     return Status;
