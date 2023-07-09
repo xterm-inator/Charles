@@ -53,6 +53,17 @@ sudo apt-get install -y gstreamer1.0-tools gstreamer1.0-nice gstreamer1.0-plugin
 ```
 
 
+# Errors
+## nvargus daemon frozen
+```
+Error generated. /dvs/git/dirty/git-master_linux/multimedia/nvgstreamer/gst-nvarguscamera/gstnvarguscamerasrc.cpp, execute:751 Failed to create CaptureSession
+```
+Run
+```bash
+sudo service nvargus-daemon restart
+```
 
-## References
+
+# References
 https://github.com/Qengineering/Face-Recognition-with-Mask-Jetson-Nano/blob/main/src/TRetina.cpp
+

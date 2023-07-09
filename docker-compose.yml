@@ -1,0 +1,12 @@
+version: '2'
+services:
+    vue:
+        build:
+            context: ./frontend
+        ports:
+            - "3000:3000"
+            - "3101:3101"
+        volumes:
+            - ./frontend/:/opt/app
+            - /opt/node_modules
+        user: node

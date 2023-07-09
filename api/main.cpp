@@ -2,44 +2,22 @@
 #include <csignal>
 #include <jetson-utils/logging.h>
 #include <algorithm>
-
-#include "Camera.h"
-#include "Image.h"
-#include "FaceDetect.h"
-#include "TRetina.h"
-
-bool SignalReceived = false;
-
-void sig_handler(int Signo)
-{
-    if (Signo == SIGINT)
-    {
-        LogVerbose("received SIGINT\n");
-        SignalReceived = true;
-    }
-}
+#include <drogon/drogon.h>
 
 int main() {
-    LogVerbose("starting\n");
+    drogon::app().loadConfigFile("../config.json");
 
-    Camera Camera;
-    Camera.Setup();
+    drogon::app().registerPostHandlingAdvice(
+        [](const drogon::HttpRequestPtr &req, const drogon::HttpResponsePtr &resp) {
+            const std::string& origin = req->getHeader("Origin");
+            resp->addHeader("Access-Control-Allow-Origin", origin);
+            resp->addHeader("Access-Control-Allow-Methods", "OPTIONS,POST");
+            resp->addHeader("Access-Control-Allow-Headers",
+                                           "x-requested-with,content-type");
+            resp->addHeader("Access-Control-Allow-Credentials","true");
+        });
 
-    FaceDetect FaceDetect;
-
-//    TRetina FaceRec(1280, 720);
-
-    LogVerbose("finished starting\n");
-
-    while (!SignalReceived)
-    {
-        Image Image;
-        Camera.Capture(Image);
-
-        FaceDetect.Detect(Image);
-
-//        TRetina FaceRec(Image.GetWidth(), Image.GetHeight());
-    }
+    drogon::app().run();
 
     return 0;
 }
