@@ -1,6 +1,7 @@
 # Installing 
 ```bash
 sudo apt install libiomp-dev
+sudo apt-get install libsqlite3-dev
 ```
 
 PATH=/usr/local/cuda/bin:$PATH
