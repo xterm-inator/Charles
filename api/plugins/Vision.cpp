@@ -53,7 +53,7 @@ std::string Vision::GetBase64Image() const
 
 std::string Vision::GetImageString() const
 {
-    std::vector<int> Params = {cv::IMWRITE_JPEG_QUALITY, 90};
+    std::vector<int> Params{cv::IMWRITE_JPEG_QUALITY, 90};
 
     std::vector<uchar> Buff;
     cv::imencode(".jpg", FrameImage.CurrentImage, Buff);

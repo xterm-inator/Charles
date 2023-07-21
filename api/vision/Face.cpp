@@ -14,10 +14,9 @@ Face::Face(detectNet::Detection Detection)
 
 Face::Face() = default;
 
-
 void Face::GenerateFaceImage(const cv::Mat& Image)
 {
-    FaceImage = Image(cv::Range(BoundingBox.y, BoundingBox.y + BoundingBox.height), cv::Range(BoundingBox.x, BoundingBox.x + BoundingBox.width));
+     Image(BoundingBox).copyTo(FaceImage);
 
     FaceImageLandmarks[0].x = Landmarks[0].x - BoundingBox.x;
     FaceImageLandmarks[0].y = Landmarks[0].y - BoundingBox.y;

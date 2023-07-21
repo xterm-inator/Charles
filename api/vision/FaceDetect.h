@@ -17,7 +17,7 @@ public:
     std::vector<Face> Faces;
 
 private:
-    TRetina Retina{3280, 2464};
+    TRetina Retina{1280, 720};
     TArcFace ArcFace{};
     TWarp Warp{};
 //    detectNet* Net;

@@ -25,6 +25,8 @@ public:
 
     void AddUnknown(const cv::Mat& Feature);
 
+    void CheckForKnownFace(const cv::Mat& Feature);
+
 private:
     bool bFirstGet{true};
     std::vector<Person> PeopleCache;

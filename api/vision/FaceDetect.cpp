@@ -1,8 +1,10 @@
 #include <trantor/utils/Logger.h>
 #include <opencv2/imgcodecs.hpp>
+#include <drogon/HttpAppFramework.h>
 #include "FaceDetect.h"
 #include "Image.h"
 #include "Face.h"
+#include "plugins/People.h"
 
 FaceDetect::FaceDetect()
 {
@@ -19,6 +21,8 @@ int FaceDetect::Detect(Image& ImageToCheck)
 
     if (result > 0)
     {
+        auto* PeoplePtr = drogon::app().getPlugin<People>();
+
         for (Face& Face : Faces) {
             Face.GenerateFaceImage(ImageToCheck.RawImage);
 
