@@ -26,19 +26,23 @@ void People::AddUnknown(const cv::Mat& Feature)
 void People::LoadList()
 {
     DbClientPtr ClientPtr = drogon::app().getDbClient();
-    try
-    {
-        Result Result = ClientPtr->execSqlSync("SELECT * FROM people LEFT JOIN features on features.person_id = people.id");
 
-        for (const Row& row : Result)
-        {
-            LOG_INFO << row["name"].as<std::string>();
-        }
-    }
-    catch (const DrogonDbException& e)
+    if (ClientPtr != nullptr)
     {
-        LOG_ERROR << e.base().what();
-        return;
+//        try
+//        {
+            Result Result = ClientPtr->execSqlSync(
+                    "SELECT * FROM people LEFT JOIN features on features.person_id = people.id");
+
+            for (const Row &row: Result) {
+                LOG_INFO << row["name"].as<std::string>();
+            }
+//        }
+//        catch (const DrogonDbException &e)
+//        {
+//            LOG_ERROR << "Database Error: " << e.base().what();
+//            return;
+//        }
     }
 }
 
@@ -47,28 +51,40 @@ void People::LoadList()
 //----------------------------------------------------------------------------------------
 inline float CosineDistance(const cv::Mat& v1, const cv::Mat& v2)
 {
-    double dot = v1.dot(v2);
-    double denom_v1 = cv::norm(v1);
-    double denom_v2 = cv::norm(v2);
-    return dot / (denom_v1 * denom_v2);
+//    double dot = v1.dot(v2);
+//    double denom_v1 = cv::norm(v1);
+//    double denom_v2 = cv::norm(v2);
+    return v1.dot(v2) / (sqrt(v1.dot(v1)) * (sqrt(v2.dot(v2))));
 }
 
 void People::CheckForKnownFace(const cv::Mat& Feature)
 {
-    Person* FoundPerson{nullptr};
-
-    for (Person Person : PeopleCache)
+    return;
+    Person FoundPerson{};
+    bool bPersonFound{false};
+    LOG_INFO << "people cache size " << PeopleCache.size();
+    for (const Person& Person : PeopleCache)
     {
         float Result = CosineDistance(Feature, Person.Feature);
 
         LOG_INFO << "Result: " << Result;
 
-        FoundPerson = &Person;
+        if (Result >= 0.5) {
+            LOG_INFO << "Person found";
+            FoundPerson = Person;
+            bPersonFound = true;
+        }
+        break;
     }
 
-    if (FoundPerson == nullptr)
+    if (!bPersonFound)
     {
+        LOG_INFO << "Unknown face, adding to database";
         AddUnknown(Feature);
+    }
+    else
+    {
+        LOG_INFO << FoundPerson.Name;
     }
 }
 

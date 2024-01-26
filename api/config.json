@@ -6,6 +6,20 @@
       "https": false
     }
   ],
+  "db_clients": [
+    {
+      "name": "main",
+      "rdbms": "sqlite3",
+      "host": "localhost",
+      "port": 5432,
+      "dbname": "main",
+      "user": "",
+      "passwd": "",
+      "is_fast": false,
+      "connection_number": 1,
+      "filename": "/home/charles/charles.db"
+    }
+  ],
   "app": {
     "number_of_threads": 4,
     "enable_session": false,
@@ -87,8 +101,14 @@
   },
   "plugins": [
     {
-      "name": "Vision",
+      "name": "People",
       "dependencies": [],
+      "config": {
+      }
+    },
+    {
+      "name": "Vision",
+      "dependencies": ["People"],
       "config": {
       }
     }

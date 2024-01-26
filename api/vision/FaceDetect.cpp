@@ -32,6 +32,10 @@ int FaceDetect::Detect(Image& ImageToCheck)
 
             cv::Mat FaceFeature = ArcFace.GetFeature(Aligned);
 
+            if (PeoplePtr != nullptr) {
+                PeoplePtr->CheckForKnownFace(FaceFeature);
+            }
+
             ImageToCheck.DrawFace(&Face);
             ImageToCheck.DrawLandmarks(&Face);
         }

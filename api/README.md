@@ -2,6 +2,10 @@
 ```bash
 sudo apt install libiomp-dev
 sudo apt-get install libsqlite3-dev
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+sudo apt update
+sudo apt install gcc-13 g++-13
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 60 --slave /usr/bin/g++ g++ /usr/bin/g++-13
 ```
 
 PATH=/usr/local/cuda/bin:$PATH

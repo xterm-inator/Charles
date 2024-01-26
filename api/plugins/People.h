@@ -20,8 +20,8 @@ class People : public drogon::Plugin<People>
 public:
     People() = default;
 
-    void initAndStart(const Json::Value& config) override;
-    void shutdown() override;
+    void initAndStart(const Json::Value& config);
+    void shutdown();
 
     void AddUnknown(const cv::Mat& Feature);
 
@@ -29,7 +29,7 @@ public:
 
 private:
     bool bFirstGet{true};
-    std::vector<Person> PeopleCache;
+    std::vector<Person> PeopleCache{};
 
     void LoadList();
 

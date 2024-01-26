@@ -26,18 +26,18 @@ int Stats::GetCpuTemp()
 
 int Stats::GetGpuTemp()
 {
-    std::ifstream CpuFile("/sys/devices/virtual/thermal/thermal_zone2/temp");
+    std::ifstream GpuFile("/sys/devices/virtual/thermal/thermal_zone2/temp");
 
-    if (!CpuFile.is_open())
+    if (!GpuFile.is_open())
     {
         LOG_ERROR << "Failed to get GPU temp";
         return 0;
     }
 
     std::string TempString;
-    CpuFile >> TempString;
+    GpuFile >> TempString;
 
-    CpuFile.close();
+    GpuFile.close();
 
     return (int) (stoi(TempString) / 1000);
 }
