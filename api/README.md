@@ -41,7 +41,7 @@ wget https://developer.nvidia.com/embedded/l4t/r32_release_v7.6/sources/t210/pub
 
 https://qengineering.eu/overclocking-the-jetson-nano.html
 
-before running nvbuild.sh need to fix a driver
+before running nvbuild.sh need to fix a driver in: ~/Linux_for_Tegra/source/public/kernel/nvidia/drivers/net/wireless/realtek/rtl8812au/hal/rtl8812a/usb/rtl8812au_xmit.c
 https://github.com/aircrack-ng/rtl8812au/issues/308
 
 
