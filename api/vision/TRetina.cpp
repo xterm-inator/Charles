@@ -126,10 +126,10 @@ int TRetina::DetectFace(Image& Image, std::vector<Face>& Faces)
         float x1 = x0 + Faces[i].BoundingBox.width;
         float y1 = y0 + Faces[i].BoundingBox.height;
 
-        x0 = std::max(std::min(x0, (float)ImgWidth - 1), 0.f);
-        y0 = std::max(std::min(y0, (float)ImgHeight - 1), 0.f);
-        x1 = std::max(std::min(x1, (float)ImgWidth - 1), 0.f);
-        y1 = std::max(std::min(y1, (float)ImgHeight - 1), 0.f);
+        x0 = std::max(std::min(x0, static_cast<float>(ImgWidth) - 1), 0.f);
+        y0 = std::max(std::min(y0, static_cast<float>(ImgHeight) - 1), 0.f);
+        x1 = std::max(std::min(x1, static_cast<float>(ImgWidth) - 1), 0.f);
+        y1 = std::max(std::min(y1, static_cast<float>(ImgHeight) - 1), 0.f);
 
         Faces[i].BoundingBox.x = x0;
         Faces[i].BoundingBox.y = y0;
@@ -140,17 +140,17 @@ int TRetina::DetectFace(Image& Image, std::vector<Face>& Faces)
     return Faces.size();
 }
 
-static inline float IntersectionArea(const Face& a, const Face& b)
+static float IntersectionArea(const Face& a, const Face& b)
 {
-    cv::Rect_<float> inter = a.BoundingBox & b.BoundingBox;
+    const cv::Rect_<float> inter = a.BoundingBox & b.BoundingBox;
     return inter.area();
 }
 
-void TRetina::QSortDescentInplace(std::vector<Face> &Faces, int Left, int Right)
+void TRetina::QSortDescentInplace(std::vector<Face> &Faces, const int Left, const int Right)
 {
     int i = Left;
     int j = Right;
-    float p = Faces[(Left + Right) / 2].FaceProb;
+    const float p = Faces[(Left + Right) / 2].FaceProb;
 
     while(i <= j){
         while(Faces[i].FaceProb > p) i++;
@@ -205,7 +205,7 @@ void TRetina::NMSSortedBboxes(const std::vector<Face> &Faces, std::vector<int> &
             const Face& b = Faces[j];
 
             // intersection over union
-            float inter_area = IntersectionArea(a, b);
+            const float inter_area = IntersectionArea(a, b);
             float union_area = areas[i] + areas[j] - inter_area;
             //             float IoU = inter_area / union_area
             if (inter_area / union_area > Threshold)
@@ -221,8 +221,8 @@ void TRetina::NMSSortedBboxes(const std::vector<Face> &Faces, std::vector<int> &
 
 ncnn::Mat TRetina::GenerateAnchors(int BaseSize, const ncnn::Mat &Ratios, const ncnn::Mat &Scales)
 {
-    int NumRatio = Ratios.w;
-    int NumScale = Scales.w;
+    const int NumRatio = Ratios.w;
+    const int NumScale = Scales.w;
 
     ncnn::Mat Anchors;
     Anchors.create(4, NumRatio * NumScale);
@@ -232,17 +232,17 @@ ncnn::Mat TRetina::GenerateAnchors(int BaseSize, const ncnn::Mat &Ratios, const 
 
     for (int i = 0; i < NumRatio; i++)
     {
-        float ar = Ratios[i];
+        const float ar = Ratios[i];
 
-        int r_w = round(BaseSize / sqrt(ar));
-        int r_h = round(r_w * ar); //round(base_size * sqrt(ar));
+        const int r_w = round(BaseSize / sqrt(ar));
+        const int r_h = round(r_w * ar); //round(base_size * sqrt(ar));
 
         for (int j = 0; j < NumScale; j++)
         {
-            float scale = Scales[j];
+            const float scale = Scales[j];
 
-            float rs_w = r_w * scale;
-            float rs_h = r_h * scale;
+            const float rs_w = r_w * scale;
+            const float rs_h = r_h * scale;
 
             float* anchor = Anchors.row(i * NumScale + j);
 

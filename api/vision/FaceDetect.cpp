@@ -15,7 +15,7 @@ int FaceDetect::Detect(Image& ImageToCheck)
 {
     Faces.clear();
 
-    int result = Retina.DetectFace(ImageToCheck, Faces);
+    const int result = Retina.DetectFace(ImageToCheck, Faces);
 
 //    LOG_INFO << "faces: " << result;
 

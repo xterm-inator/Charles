@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include <opencv4/opencv2/core.hpp>
 #include <vector>
 #include "net.h"
 #include "Face.h"
@@ -16,7 +15,7 @@ public:
     TRetina(unsigned int Width, unsigned int Height);
     virtual ~TRetina();
 
-    int DetectFace(Image& image, std::vector<Face>& Faces);
+    int DetectFace(Image& Image, std::vector<Face>& Faces);
 
 private:
     ncnn::Net RetinaFace;
@@ -29,7 +28,7 @@ private:
     const int RetinaWidth{320};
     const int RetinaHeight{240};
 
-    const float ProbThreshold{0.8f};
+    const float ProbThreshold{0.92f};
     const float NMSThreshold{0.4f};
 
 private:

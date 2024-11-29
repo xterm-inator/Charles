@@ -27,8 +27,8 @@ private:
     Fps FpsCounter;
     Image FrameImage;
 
-    void Run(std::atomic<bool>& ShouldRun);
+    void Run(const std::atomic<bool>& ShouldRun);
 
 public:
-    inline unsigned int GetFps() { return FpsCounter.Get(); };
+    [[nodiscard]] unsigned int GetFps() const { return FpsCounter.Get(); };
 };

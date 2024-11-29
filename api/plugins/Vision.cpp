@@ -23,14 +23,14 @@ void Vision::shutdown()
     ThreadHandler.join();
 }
 
-void Vision::Run(std::atomic<bool>& IsRunning)
+void Vision::Run(const std::atomic<bool>& ShouldRun)
 {
     Camera Camera;
     Camera.Setup();
 
     FaceDetect FaceDetect;
 
-    while (IsRunning)
+    while (ShouldRun)
     {
         if (!Camera.Capture(FrameImage))
         {

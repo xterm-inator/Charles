@@ -59,7 +59,6 @@ inline float CosineDistance(const cv::Mat& v1, const cv::Mat& v2)
 
 void People::CheckForKnownFace(const cv::Mat& Feature)
 {
-    return;
     Person FoundPerson{};
     bool bPersonFound{false};
     LOG_INFO << "people cache size " << PeopleCache.size();
@@ -69,7 +68,7 @@ void People::CheckForKnownFace(const cv::Mat& Feature)
 
         LOG_INFO << "Result: " << Result;
 
-        if (Result >= 0.5) {
+        if (Result >= 0.65) {
             LOG_INFO << "Person found";
             FoundPerson = Person;
             bPersonFound = true;

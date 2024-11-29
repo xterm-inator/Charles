@@ -34,5 +34,5 @@ private:
     void LoadList();
 
 public:
-    inline std::vector<Person>* GetPeople() { return &PeopleCache; };
+    std::vector<Person>* GetPeople() { return &PeopleCache; };
 };
