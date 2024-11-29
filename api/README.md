@@ -13,7 +13,6 @@ PATH=/usr/local/cuda/bin:$PATH
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=../toolchains/jetson.toolchain.cmake -DNCNN_VULKAN=ON -DNCNN_BUILD_EXAMPLES=ON -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc ..
 
 https://github.com/AastaNV/JEP/blob/master/script/install_opencv4.6.0_Jetson.sh
-https://qengineering.eu/overclocking-the-jetson-nano.html
 https://qengineering.eu/install-opencv-4.5-on-jetson-nano.html
 https://qengineering.eu/install-ncnn-on-jetson-nano.html
 
@@ -32,24 +31,24 @@ sudo cp -r install/lib/*.a /usr/local/lib/
 # sudo cp -r install/lib/cmake/ncnn /usr/local/lib/cmake/ncnn
 ```
 
-
-If you get this error
-```
-CMake Error at /usr/local/share/cmake-3.26/Modules/FindPackageHandleStandardArgs.cmake:230 (message):
-  Could NOT find CUDA (missing: CUDA_TOOLKIT_ROOT_DIR CUDA_INCLUDE_DIRS
-  CUDA_CUDART_LIBRARY) (found suitable exact version "10.2")
-Call Stack (most recent call first):
-  /usr/local/share/cmake-3.26/Modules/FindPackageHandleStandardArgs.cmake:600 (_FPHSA_FAILURE_MESSAGE)
-  /usr/local/share/cmake-3.26/Modules/FindCUDA.cmake:1268 (find_package_handle_standard_args)
-  glslang/CMakeLists.txt:252 (find_package)
-  /usr/local/lib/cmake/opencv4/OpenCVConfig.cmake:108 (find_host_package)
-  examples/CMakeLists.txt:17 (find_package)
-
-```
-run
+## Overclocking
 ```bash
-sudo rm -rf /usr/local/lib/cmake/opencv4/
+sudo update-alternatives --config gcc #change to gcc-9
+
+cd Downloads
+wget https://developer.nvidia.com/embedded/l4t/r32_release_v7.6/sources/t210/public_sources.tbz2
 ```
+
+https://qengineering.eu/overclocking-the-jetson-nano.html
+
+before running nvbuild.sh need to fix a driver
+https://github.com/aircrack-ng/rtl8812au/issues/308
+
+
+```bash
+sudo update-alternatives --config gcc #change back to gcc-13
+```
+
 
 
 ## GStreamer
@@ -68,6 +67,24 @@ Run
 sudo service nvargus-daemon restart
 ```
 
+## opencv4
+If you get this error
+```
+CMake Error at /usr/local/share/cmake-3.26/Modules/FindPackageHandleStandardArgs.cmake:230 (message):
+  Could NOT find CUDA (missing: CUDA_TOOLKIT_ROOT_DIR CUDA_INCLUDE_DIRS
+  CUDA_CUDART_LIBRARY) (found suitable exact version "10.2")
+Call Stack (most recent call first):
+  /usr/local/share/cmake-3.26/Modules/FindPackageHandleStandardArgs.cmake:600 (_FPHSA_FAILURE_MESSAGE)
+  /usr/local/share/cmake-3.26/Modules/FindCUDA.cmake:1268 (find_package_handle_standard_args)
+  glslang/CMakeLists.txt:252 (find_package)
+  /usr/local/lib/cmake/opencv4/OpenCVConfig.cmake:108 (find_host_package)
+  examples/CMakeLists.txt:17 (find_package)
+
+```
+run
+```bash
+sudo rm -rf /usr/local/lib/cmake/opencv4/
+```
 
 # References
 https://github.com/Qengineering/Face-Recognition-with-Mask-Jetson-Nano/blob/main/src/TRetina.cpp
